@@ -1,4 +1,8 @@
 import FWCore.ParameterSet.Config as cms
+import FWCore.ParameterSet.VarParsing as VarParsing
+
+options = VarParsing.VarParsing('analysis')
+options.parseArguments()
 
 process = cms.Process('ggKit')
 
@@ -35,11 +39,14 @@ process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
   )))
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
+print " >> Loaded",len(options.inputFiles),"input files from list."
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/004A0552-3929-E611-BD44-0025905A48F0.root'
         #'/store/mc/RunIISummer16MiniAODv2/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/08E155A9-FAB6-E611-92BF-00259073E45E.root'
-        '/store/mc/RunIISummer16MiniAODv2/GluGluHToZG_M-125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/50000/64FBC2BD-60C7-E611-B23D-02163E012D6B.root'
+        #'/store/mc/RunIISummer16MiniAODv2/GluGluHToZG_M-125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/50000/64FBC2BD-60C7-E611-B23D-02163E012D6B.root'
+        '/store/user/mandrews/ML/MINIAODSIM/T7WgStealth_800_200_MINIAODSIM_noPU/180220_185333/0000/miniAOD-prod_PAT_1.root'
+        #options.inputFiles
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")

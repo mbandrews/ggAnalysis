@@ -2,6 +2,7 @@
 #define ggNtuplizer_h
 
 #include "TTree.h"
+#include "TProfile2D.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -28,6 +29,8 @@
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 //#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 
 using namespace std;
 
@@ -73,6 +76,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesJets       (TTree*);
   void branchesMuonPairs  (TTree*);
   void branchesZPairs     (TTree*);
+  void branchesEB         (TTree*, edm::Service<TFileService>&);
+  void branchesEE         (TTree*, edm::Service<TFileService>&);
+  void branchesHBHE       (TTree*, edm::Service<TFileService>&);
+  void branchesECALatHCAL (TTree*, edm::Service<TFileService>&);
+  void branchesECALstitched (TTree*, edm::Service<TFileService>&);
 
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
@@ -87,6 +95,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&, const edm::EventSetup&);
   void fillMuonsPairs (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillZPairs     (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
+  void fillEB         (const edm::Event&, const edm::EventSetup&);
+  void fillEE         (const edm::Event&, const edm::EventSetup&);
+  void fillHBHE       (const edm::Event&, const edm::EventSetup&);
+  void fillECALatHCAL (const edm::Event&, const edm::EventSetup&);
+  void fillECALstitched (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
 
@@ -183,6 +196,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusEcalIsoToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusHcalIsoToken_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfCandidateCollection_;
+
+  // For images
+  edm::EDGetTokenT<EcalRecHitCollection> EBRecHitCollectionT_;
+  edm::EDGetTokenT<EcalRecHitCollection> EERecHitCollectionT_;
+  edm::EDGetTokenT<HBHERecHitCollection> HBHERecHitCollectionT_;
 
   //check
   edm::EDGetToken gsfEle_;

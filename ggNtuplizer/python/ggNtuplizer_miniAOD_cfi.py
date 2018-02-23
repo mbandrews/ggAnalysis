@@ -88,4 +88,8 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              elePFClusHcalIsoProducer = cms.InputTag("electronHcalPFClusterIsolationProducer"),
                              BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
                              BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter")
+
+                             , reducedEBRecHitCollection   = cms.InputTag('reducedEcalRecHitsEB')
+                             , reducedEERecHitCollection   = cms.InputTag('reducedEcalRecHitsEE')
+                             , reducedHBHERecHitCollection = cms.InputTag('reducedHcalRecHits:hbhereco')
 )

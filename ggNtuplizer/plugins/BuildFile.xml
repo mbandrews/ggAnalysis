@@ -21,4 +21,9 @@
 <use name="RecoVertex/KinematicFitPrimitives"/>
 <use name="RecoVertex/KinematicFit"/>
 
+<use name="DQM/HcalCommon"/>
+<use name="Geometry/CaloGeometry"/>
+<use name="Geometry/Records"/>
+<use name="Calibration/IsolatedParticles"/>
+
 <flags EDM_PLUGIN="1"/>
