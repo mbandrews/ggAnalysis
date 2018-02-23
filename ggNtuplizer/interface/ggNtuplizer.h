@@ -24,13 +24,14 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 //#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
-#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
-#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
+#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 using namespace std;
 
@@ -76,6 +77,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesJets       (TTree*);
   void branchesMuonPairs  (TTree*);
   void branchesZPairs     (TTree*);
+  void branchesIsoTracks  (TTree*);
+
   void branchesEB         (TTree*, edm::Service<TFileService>&);
   void branchesEE         (TTree*, edm::Service<TFileService>&);
   void branchesHBHE       (TTree*, edm::Service<TFileService>&);
@@ -95,6 +98,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&, const edm::EventSetup&);
   void fillMuonsPairs (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillZPairs     (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
+  void fillIsoTracks  (const edm::Event&);
+
   void fillEB         (const edm::Event&, const edm::EventSetup&);
   void fillEE         (const edm::Event&, const edm::EventSetup&);
   void fillHBHE       (const edm::Event&, const edm::EventSetup&);
@@ -119,6 +124,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpGenScaleSystWeights_;
   bool dumpMuonsPairs_;
   bool dumpZPairs_;
+  bool dumpIsoTracks_;
 
   bool isAOD_;
   bool runHFElectrons_;
@@ -127,6 +133,16 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   double trgFilterDeltaPtCut_;
   double trgFilterDeltaRCut_;
+  
+  double isoPtLeptoncut_;
+  double isoPtcut_;
+  double isoPtcutnoIso_;
+  double isoDRcut_;
+  double isoIsoDZcut_;
+  vector<double >isoMiniIsoParams_;
+  double isoChIsocut_;
+  double isoLepOverlapDR_;
+  double isoOverlapPtMin_;
 
   edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>         vtxBSLabel_;
@@ -224,6 +240,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
   boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
   std::vector<std::string> jecAK8PayloadNames_;
+  HLTPrescaleProvider hltPrescaleProvider_;
 };
 
 #endif

@@ -8,7 +8,9 @@ void setbit(UShort_t& x, UShort_t bit) {
   x |= (a << bit);
 }
 
-ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
+ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
+  hltPrescaleProvider_(ps, consumesCollector(), *this)
+{
 
   development_               = ps.getParameter<bool>("development");
   addFilterInfoAOD_          = ps.getParameter<bool>("addFilterInfoAOD");
@@ -27,11 +29,23 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpGenScaleSystWeights_   = ps.getParameter<bool>("dumpGenScaleSystWeights");
   dumpMuonsPairs_            = ps.getParameter<bool>("dumpMuonsPairs");
   dumpZPairs_                = ps.getParameter<bool>("dumpZPairs");
+  dumpIsoTracks_             = ps.getParameter<bool>("dumpIsoTracks");
   isAOD_                     = ps.getParameter<bool>("isAOD");
   runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
   trgFilterDeltaRCut_        = ps.getParameter<double>("trgFilterDeltaRCut");
+  
+  isoPtLeptoncut_            = ps.getParameter<double>("isoPtLeptoncut");
+  isoPtcut_                  = ps.getParameter<double>("isoPtcut");
+  isoPtcutnoIso_             = ps.getParameter<double>("isoPtcutnoIso");
+  isoDRcut_                  = ps.getParameter<double>("isoDRcut");
+  isoIsoDZcut_               = ps.getParameter<double>("isoIsoDZcut");
+  isoMiniIsoParams_          = ps.getParameter<vector<double>>("isoMiniIsoParams");
+  if (isoMiniIsoParams_.size() != 3) throw cms::Exception("ParameterError") << "isoMiniIsoParams must have exactly 3 elements.\n";
+  isoChIsocut_               = ps.getParameter<double>("isoChIsocut");
+  isoLepOverlapDR_           = ps.getParameter<double>("isoLepOverlapDR");
+  isoOverlapPtMin_           = ps.getParameter<double>("isoOverlapPtMin");
 
   vtxLabel_                  = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxBSLabel"));
@@ -135,6 +149,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   if (dumpJets_)       branchesJets(tree_);
   if (dumpMuonsPairs_) branchesMuonPairs(tree_);
   if (dumpZPairs_)     branchesZPairs(tree_);
+  if (dumpIsoTracks_)  branchesIsoTracks(tree_);
 
   branchesEB(tree_, fs);
   branchesEE(tree_, fs);
@@ -198,6 +213,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   if (dumpJets_)        fillJets(e,es);
   if (dumpMuonsPairs_)  fillMuonsPairs(e, es, pv, vtx);
   if (dumpZPairs_)      fillZPairs(e, es, pv, vtx);
+  if (dumpIsoTracks_)   fillIsoTracks(e);
 
   fillEB(e, es);
   fillEE(e, es);
