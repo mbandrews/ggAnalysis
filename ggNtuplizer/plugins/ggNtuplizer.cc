@@ -124,6 +124,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   phoNeutralHadronIsolationToken_PUPPI_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation_PUPPI"));
   phoPhotonIsolationToken_PUPPI_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_PUPPI"));
 
+  EBRecHitCollectionT_   = consumes<EcalRecHitCollection>(ps.getParameter<edm::InputTag>("reducedEBRecHitCollection"));
+  EERecHitCollectionT_   = consumes<EcalRecHitCollection>(ps.getParameter<edm::InputTag>("reducedEERecHitCollection"));
+  HBHERecHitCollectionT_ = consumes<HBHERecHitCollection>(ps.getParameter<edm::InputTag>("reducedHBHERecHitCollection"));
+
   Service<TFileService> fs;
   tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_26_06)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
@@ -146,6 +150,12 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   if (dumpMuonsPairs_) branchesMuonPairs(tree_);
   if (dumpZPairs_)     branchesZPairs(tree_);
   if (dumpIsoTracks_)  branchesIsoTracks(tree_);
+
+  branchesEB(tree_, fs);
+  branchesEE(tree_, fs);
+  branchesHBHE(tree_, fs);
+  branchesECALatHCAL(tree_, fs);
+  branchesECALstitched(tree_, fs);
 }
 
 ggNtuplizer::~ggNtuplizer() {
@@ -204,6 +214,12 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   if (dumpMuonsPairs_)  fillMuonsPairs(e, es, pv, vtx);
   if (dumpZPairs_)      fillZPairs(e, es, pv, vtx);
   if (dumpIsoTracks_)   fillIsoTracks(e);
+
+  fillEB(e, es);
+  fillEE(e, es);
+  fillHBHE(e, es);
+  fillECALatHCAL(e, es);
+  fillECALstitched(e, es);
 
   hEvents_->Fill(1.5);
   tree_->Fill();

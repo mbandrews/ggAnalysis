@@ -2,6 +2,7 @@
 #define ggNtuplizer_h
 
 #include "TTree.h"
+#include "TProfile2D.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -23,6 +24,8 @@
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 #include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
@@ -76,6 +79,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesZPairs     (TTree*);
   void branchesIsoTracks  (TTree*);
 
+  void branchesEB         (TTree*, edm::Service<TFileService>&);
+  void branchesEE         (TTree*, edm::Service<TFileService>&);
+  void branchesHBHE       (TTree*, edm::Service<TFileService>&);
+  void branchesECALatHCAL (TTree*, edm::Service<TFileService>&);
+  void branchesECALstitched (TTree*, edm::Service<TFileService>&);
+
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
   void fillGenPart    (const edm::Event&);
@@ -90,6 +99,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillMuonsPairs (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillZPairs     (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillIsoTracks  (const edm::Event&);
+
+  void fillEB         (const edm::Event&, const edm::EventSetup&);
+  void fillEE         (const edm::Event&, const edm::EventSetup&);
+  void fillHBHE       (const edm::Event&, const edm::EventSetup&);
+  void fillECALatHCAL (const edm::Event&, const edm::EventSetup&);
+  void fillECALstitched (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
 
@@ -197,6 +212,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusEcalIsoToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusHcalIsoToken_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfCandidateCollection_;
+
+  // For images
+  edm::EDGetTokenT<EcalRecHitCollection> EBRecHitCollectionT_;
+  edm::EDGetTokenT<EcalRecHitCollection> EERecHitCollectionT_;
+  edm::EDGetTokenT<HBHERecHitCollection> HBHERecHitCollectionT_;
 
   //check
   edm::EDGetToken gsfEle_;
