@@ -156,7 +156,7 @@ void ggNtuplizer::fillECALstitched ( const edm::Event& iEvent, const edm::EventS
     iphi_ = ebId.iphi() - 1;
     ieta_ = ebId.ieta() > 0 ? ebId.ieta()-1 : ebId.ieta();
     // Fill vector for image
-    ieta_global = ieta_ + ieta_global_offset;
+    ieta_global = ieta_ + EBDetId::MAX_IETA + ieta_global_offset;
     idx_ = ieta_global*EBDetId::MAX_IPHI + iphi_; 
     vECAL_energy_[idx_] = energy_;
     // Fill histogram for monitoring
